@@ -1,1 +1,1 @@
-# Image_Classifier
+# Optimized Deep Learning on MNIST with CUDA
