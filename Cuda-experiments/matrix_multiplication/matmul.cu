@@ -3,21 +3,46 @@
 #include <time.h>
 #include <cuda_runtime.h>
 
+#include <chrono>
+
 // define M,K,N,BLOCK_SIZE as 1024,512,2048,32
+#define M 256  // Number of rows in A and C
+#define K 512   // Number of columns in A and rows in B
+#define N 256  // Number of columns in B and C
+#define BLOCK_SIZE 32
 
 // CPU matrix multiplication
 void matmul_cpu(float *A, float *B, float *C, int m, int k, int n){
-    // pass
+    for (int i = 0; i < m; i++) {
+        for (int j = 0; j < n; j++) {
+            float sum = 0.0f;
+            for (int l = 0; l < k; l++) {
+                sum += A[i * k + l] * B[l * n + j];
+            }
+            C[i * n + j] = sum;
+        }
+    }
 }
 
 // CUDA kernel for matrix multiplication
 __global__ void matmul_gpu(float *A, float *B, float *C, int m, int k, int n){
-    // pass
+    int row = blockIdx.y * blockDim.y + threadIdx.y;
+    int col = blockIdx.x * blockDim.x + threadIdx.x;
+
+    if (row < m && col < n) {
+        float sum = 0.0f;
+        for (int l = 0; l < k; l++) {
+            sum += A[row * k + l] * B[l * n + col];
+        }
+        C[row * n + col] = sum;
+    }
 }
 
 // Initialize matrix with random values
 void init_matrix(float *mat, int rows, int cols){
-    // pass
+    for (int i = 0; i < rows * cols; i++) {
+        mat[i] = (float)rand() / RAND_MAX;
+    }
 }
 
 double get_time() {
