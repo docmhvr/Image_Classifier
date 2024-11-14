@@ -5,8 +5,8 @@
 
 #include <chrono>
 
-#define N 100000  // Vector size = 10 million
-#define BLOCK_SIZE 64
+#define N 10000000  // Vector size = 10 million
+#define BLOCK_SIZE 256
 
 // A = [1,2,3,4]
 // B = [5,6,7,8]
